@@ -1,0 +1,42 @@
+{
+  "name": "typeorm-to-prisma",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "description": "Use typeorm entities with prisma client",
+  "main": "dist/cli.js",
+  "bin": {
+    "generate-prisma": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jonahlk/typeorm-to-prisma.git"
+  },
+  "dependencies": {
+    "chalk": "^5.0.0",
+    "commander": "^8.3.0",
+    "meow": "^10.1.2",
+    "pg": "^8.7.1",
+    "prisma": "^3.8.1",
+    "typeorm": "^0.2.41",
+    "typeorm-to-json": "^1.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.10",
+    "typescript": "^4.5.5"
+  },
+  "keywords": [
+    "typeorm",
+    "prisma",
+    "orm",
+    "entity"
+  ],
+  "author": "jonahlk",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jonahlk/typeorm-to-prisma/issues"
+  },
+  "homepage": "https://github.com/jonahlk/typeorm-to-prisma#readme"
+}

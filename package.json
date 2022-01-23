@@ -1,6 +1,6 @@
 {
   "name": "typeorm-to-prisma",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "type": "commonjs",
   "description": "Use typeorm entities with prisma client",
   "main": "dist/cli.js",

@@ -8,7 +8,7 @@ program.option('-s, --schema-path <path>', 'Path for the schema file to be creat
 program.showHelpAfterError();
 
 const {POSTGRESQL_HOST, POSTGRESQL_USERNAME, POSTGRESQL_PASSWORD, POSTGRESQL_DB} = process.env;
-console.log(process.env);
+
 if (!POSTGRESQL_HOST) {
   program.requiredOption('-h, --db-host <key>', 'Database host ');
 }

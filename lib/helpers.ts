@@ -1,4 +1,5 @@
 export const postgresToPrismaTypeMapping = {
+  array: 'String[]',
   text: 'String',
   char: 'String',
   varchar: 'String',
@@ -39,9 +40,9 @@ export const postgresToPrismaTypeMapping = {
   json: 'Json',
   jsonb: 'Json',
   bytea: 'Bytes',
-  'Unsupported("ViewColumn")': 'Unsupported("ViewColumn")'
-}
+  'Unsupported("ViewColumn")': 'Unsupported("ViewColumn")',
+};
 
 export const generateBlankSpaces = (longestLength: number, currentLength: number): string => {
-  return Array.from(Array(longestLength - currentLength + 4).keys()).map(() => ' ').join('')
-}
+  return Array.from(Array(longestLength - currentLength + 4).keys()).map(() => ' ').join('');
+};

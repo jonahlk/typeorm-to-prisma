@@ -37,7 +37,7 @@ export const generatePrismaSchema = (models: ModelDefinition[], schemaPath?: str
       const prismaMap = `@map("${_field.dbColumnName}")`;
       const prismaUnique = `@unique`;
       const prismaPrimary = `@id`;
-      const isOptional = !_field.isPrimary && (_field.isNullable || _model.type === 'view');
+      const isOptional = !_field.isPrimary && (_field.isNullable || _model.type === 'view') && !mappedType.includes('[]');
       prismaFields.push(`  ${_field.name}${blankSpacesAfterProperty}${mappedType}${isOptional ? '?' : ''}${blankSpacesAfterType}${prismaMap}  ${_field.isPrimary ? prismaPrimary : _field.isUnique ? prismaUnique : ''}`);
     }
 

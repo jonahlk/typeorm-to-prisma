@@ -56,9 +56,6 @@ export const generatePrismaSchema = (models: ModelDefinition[], schemaPath?: str
     });
 
     for (const _relation of _model.relations) {
-      if (_relation.type === 'one-to-one') {
-        console.log(_relation);
-      }
       const blankSpacesAfterProperty = generateBlankSpaces(longestPropertyLength, _relation.name.length);
       const showRelationName = referencedModelsWithMultipleRelations.includes(_relation.referencedModel);
       const randomConstraintName = `, map: "${uuidv4()}_fk"`;

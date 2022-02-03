@@ -1,6 +1,6 @@
 {
   "name": "typeorm-to-prisma",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "type": "commonjs",
   "description": "Use typeorm entities with prisma client",
   "main": "dist/cli.js",
@@ -8,7 +8,8 @@
     "generate-prisma": "dist/cli.js"
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "publish": "npm run build && npm publish"
   },
   "repository": {
     "type": "git",
@@ -20,7 +21,8 @@
     "pg": "^8.7.1",
     "prisma": "^3.8.1",
     "typeorm": "^0.2.41",
-    "typeorm-to-json": "1.0.2"
+    "typeorm-to-json": "1.0.4",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/node": "^17.0.10",

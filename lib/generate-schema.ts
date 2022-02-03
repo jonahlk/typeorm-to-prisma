@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import {ModelDefinition} from 'typeorm-to-json/dist/types';
 import {generateBlankSpaces, postgresToPrismaTypeMapping} from './helpers';
+import {v4 as uuidv4} from 'uuid';
 
 
 export const generatePrismaSchema = (models: ModelDefinition[], schemaPath?: string) => {
@@ -55,19 +56,34 @@ export const generatePrismaSchema = (models: ModelDefinition[], schemaPath?: str
     });
 
     for (const _relation of _model.relations) {
+      if (_relation.type === 'one-to-one') {
+        console.log(_relation);
+      }
       const blankSpacesAfterProperty = generateBlankSpaces(longestPropertyLength, _relation.name.length);
       const showRelationName = referencedModelsWithMultipleRelations.includes(_relation.referencedModel);
+      const randomConstraintName = `, map: "${uuidv4()}_fk"`;
+
       if (['many-to-one'].includes(_relation.type)) {
         const blankSpacesAfterType = generateBlankSpaces(longestTypeLength, _relation.referencedModel.length);
         const relationKey = `name: "${_relation.name}", `;
-        const relationDefinition = `@relation(${showRelationName ? relationKey : ''}references: [${_relation.references}], fields: [${_relation.fields}])`;
+        const relationDefinition = `@relation(${showRelationName ? relationKey : ''}references: [${_relation.references}], fields: [${_relation.fields}]${randomConstraintName})`;
         prismaRelations.push(`  ${_relation.name}${blankSpacesAfterProperty}${_relation.referencedModel}?${blankSpacesAfterType}${relationDefinition}`);
       }
-      if (['one-to-many', 'one-to-one'].includes(_relation.type)) {
+
+      if (['one-to-many'].includes(_relation.type)) {
         const blankSpacesAfterType = generateBlankSpaces(longestTypeLength, _relation.referencedModel.length + 2);
         const relationKey = `name: "${_relation.key}"`;
         const showModelAsArray = _relation.type === 'one-to-one' ? '?' : '[]';
         prismaRelations.push(`  ${_relation.name}${blankSpacesAfterProperty}${_relation.referencedModel}${showModelAsArray}${blankSpacesAfterType}${showRelationName ? `@relation(${relationKey})` : ''}`);
+      }
+
+      if (['one-to-one'].includes(_relation.type)) {
+        const blankSpacesAfterType = generateBlankSpaces(longestTypeLength, _relation.referencedModel.length);
+        const relationKey = `name: "${_relation.key}"`;
+        const fields = !!_relation.fields.length ? `, fields: [${_relation.fields}]` : '';
+        const references = !!_relation.fields.length ? `, references: [${_relation.references}]` : '';
+        const relationDefinition = `@relation(${relationKey}${fields}${references}${randomConstraintName})`;
+        prismaRelations.push(`  ${_relation.name}${blankSpacesAfterProperty}${_relation.referencedModel}?${blankSpacesAfterType}${relationDefinition}`);
       }
     }
 

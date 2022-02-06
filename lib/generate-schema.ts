@@ -4,7 +4,7 @@ import {generateBlankSpaces, postgresToPrismaTypeMapping} from './helpers';
 import {v4 as uuidv4} from 'uuid';
 
 
-export const generatePrismaSchema = (models: ModelDefinition[], schemaPath?: string) => {
+export const generatePrismaSchema = (models: ModelDefinition[], schemaPath?: string, makeCompanyIdOptional = false) => {
   const prismaSchema = [];
 
   prismaSchema.push(`generator client {\n  provider = "prisma-client-js"\n}\n\ndatasource db {\n  provider = "postgresql"\n  url      = env("DATABASE_URL")\n}\n`);
@@ -40,8 +40,9 @@ export const generatePrismaSchema = (models: ModelDefinition[], schemaPath?: str
       const prismaMap = `@map("${_field.dbColumnName}")`;
       const prismaUnique = `@unique`;
       const prismaPrimary = `@id`;
-      const isOptional = !_field.isPrimary && (_field.isNullable || _model.type === 'view') && !mappedType.includes('[]');
-      prismaFields.push(`  ${_field.name}${blankSpacesAfterProperty}${mappedType}${isOptional ? '?' : ''}${blankSpacesAfterType}${prismaMap}  ${_field.isPrimary ? prismaPrimary : _field.isUnique ? prismaUnique : ''}`);
+      const prismaGenerated = `@default(dbgenerated())`;
+      const isOptional = !_field.isPrimary && !mappedType.includes('[]') && (_field.isNullable || _model.type === 'view' || (_field.name === 'companyId' && makeCompanyIdOptional));
+      prismaFields.push(`  ${_field.name}${blankSpacesAfterProperty}${mappedType}${isOptional ? '?' : ''}${blankSpacesAfterType}${prismaMap}  ${_field.isPrimary ? prismaPrimary : _field.isUnique ? prismaUnique : ''} ${_field.isGenerated ? prismaGenerated : ''}`);
     }
 
     const prismaRelations: string[] = [];

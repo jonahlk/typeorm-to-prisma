@@ -5,6 +5,7 @@ require('dotenv').config({path: `.env`});
 
 program.requiredOption('-e, --entities <path>', 'Path to entities');
 program.option('-s, --schema-path <path>', 'Path for the schema file to be created');
+program.option('-co --company-id-optional', 'Make all companyId columns optional');
 program.showHelpAfterError();
 
 const {POSTGRESQL_HOST, POSTGRESQL_USERNAME, POSTGRESQL_PASSWORD, POSTGRESQL_DB} = process.env;
@@ -24,8 +25,8 @@ if (!POSTGRESQL_DB) {
 }
 
 program.parse(process.argv);
-const options = program.opts()
-const {entities, dbHost, dbUsername, dbPassword, dbDatabase, schemaPath} = options;
+const options = program.opts();
+const {entities, dbHost, dbUsername, dbPassword, dbDatabase, schemaPath, companyIdOptional} = options;
 
 generatePrismaSchemaFromEntities(
   entities,
@@ -34,12 +35,13 @@ generatePrismaSchemaFromEntities(
   dbPassword || POSTGRESQL_PASSWORD,
   dbDatabase || POSTGRESQL_DB,
   schemaPath,
+  companyIdOptional,
 )
-.then(() => {
-  console.log("The schema.prisma file has been generated successfully")
-  process.exit(0)
-})
-.catch((err) => {
-  console.error(err)
-  process.exit(1)
-})
+  .then(() => {
+    console.log('The schema.prisma file has been generated successfully');
+    process.exit(0);
+  })
+  .catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });

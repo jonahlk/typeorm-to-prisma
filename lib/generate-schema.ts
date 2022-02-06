@@ -30,8 +30,10 @@ export const generatePrismaSchema = (models: ModelDefinition[], schemaPath?: str
 
     const prismaFields: string[] = [];
     for (const _field of _model.fields) {
-      const mappedType = postgresToPrismaTypeMapping[_field.dbType as unknown as string] || _field.dbType;
-
+      let mappedType = postgresToPrismaTypeMapping[_field.dbType as unknown as string] || _field.dbType;
+      if (_field.isArray) {
+        mappedType += '[]';
+      }
       const blankSpacesAfterProperty = generateBlankSpaces(longestPropertyLength, _field.name.length);
       const blankSpacesAfterType = generateBlankSpaces(longestTypeLength, mappedType.length);
 

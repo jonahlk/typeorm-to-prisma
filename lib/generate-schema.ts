@@ -7,7 +7,7 @@ import {v4 as uuidv4} from 'uuid';
 export const generatePrismaSchema = (models: ModelDefinition[], schemaPath?: string, makeCompanyIdOptional = false) => {
   const prismaSchema = [];
 
-  prismaSchema.push(`generator client {\n  provider = "prisma-client-js"\n}\n\ndatasource db {\n  provider = "postgresql"\n  url      = env("DATABASE_URL")\n}\n`);
+  prismaSchema.push(`generator client {\n  provider = "prisma-client-js"\n  previewFeatures = ["interactiveTransactions"]\n}\n\ndatasource db {\n  provider = "postgresql"\n  url      = env("DATABASE_URL")\n}\n`);
   for (const _model of models) {
 
     const longestFieldNameLength = _model.fields.reduce((acc, field) => field.name.length > acc ? field.name.length : acc, 0);

@@ -64,8 +64,6 @@ export const generatePrismaSchema = (models: ModelDefinition[], schemaPath?: str
       const showRelationName = referencedModelsWithMultipleRelations.includes(_relation.referencedModel);
       const randomConstraintName = `, map: "${uuidv4()}_fk"`;
       const constraintHash = `, map: "${crypto.createHash('md5').update(`${_relation.type}_${_relation.referencedModel}_${_relation.fields}`).digest('hex')}_fk"`;
-      
-      console.log(constraintHash);
 
       if (['many-to-one'].includes(_relation.type)) {
         const blankSpacesAfterType = generateBlankSpaces(longestTypeLength, _relation.referencedModel.length);

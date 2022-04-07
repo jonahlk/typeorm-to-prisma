@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import {ModelDefinition} from 'typeorm-to-json/dist/types';
 import {generateBlankSpaces, postgresToPrismaTypeMapping} from './helpers';
+import * as crypto from 'crypto';
 import {v4 as uuidv4} from 'uuid';
 
 
@@ -52,21 +53,24 @@ export const generatePrismaSchema = (models: ModelDefinition[], schemaPath?: str
     const referencedModelsWithMultipleRelations = referencedModels.filter(item => {
       if (uniqueElements.has(item)) {
         uniqueElements.delete(item);
-      }
-      else {
+      } else {
         return item;
       }
     });
 
     for (const _relation of _model.relations) {
+
       const blankSpacesAfterProperty = generateBlankSpaces(longestPropertyLength, _relation.name.length);
       const showRelationName = referencedModelsWithMultipleRelations.includes(_relation.referencedModel);
       const randomConstraintName = `, map: "${uuidv4()}_fk"`;
+      const constraintHash = `, map: "${crypto.createHash('md5').update(`${_relation.type}_${_relation.referencedModel}_${_relation.fields}`).digest('hex')}_fk"`;
+      
+      console.log(constraintHash);
 
       if (['many-to-one'].includes(_relation.type)) {
         const blankSpacesAfterType = generateBlankSpaces(longestTypeLength, _relation.referencedModel.length);
         const relationKey = `name: "${_relation.name}", `;
-        const relationDefinition = `@relation(${showRelationName ? relationKey : ''}references: [${_relation.references}], fields: [${_relation.fields}]${randomConstraintName})`;
+        const relationDefinition = `@relation(${showRelationName ? relationKey : ''}references: [${_relation.references}], fields: [${_relation.fields}]${constraintHash})`;
         prismaRelations.push(`  ${_relation.name}${blankSpacesAfterProperty}${_relation.referencedModel}?${blankSpacesAfterType}${relationDefinition}`);
       }
 
@@ -82,7 +86,7 @@ export const generatePrismaSchema = (models: ModelDefinition[], schemaPath?: str
         const relationKey = `name: "${_relation.key}"`;
         const fields = !!_relation.fields.length ? `, fields: [${_relation.fields}]` : '';
         const references = !!_relation.fields.length ? `, references: [${_relation.references}]` : '';
-        const relationDefinition = `@relation(${relationKey}${fields}${references}${randomConstraintName})`;
+        const relationDefinition = `@relation(${relationKey}${fields}${references}${constraintHash})`;
         prismaRelations.push(`  ${_relation.name}${blankSpacesAfterProperty}${_relation.referencedModel}?${blankSpacesAfterType}${relationDefinition}`);
       }
     }

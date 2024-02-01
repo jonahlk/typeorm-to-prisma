@@ -10,7 +10,8 @@
   "scripts": {
     "build": "tsc",
     "prepublish": "npm run build",
-    "preapre": "npm run build"
+    "preapre": "npm run build",
+    "prepack": "npm run build"
   },
   "repository": {
     "type": "git",

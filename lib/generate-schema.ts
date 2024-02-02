@@ -2,15 +2,13 @@ import * as fs from 'fs';
 import {ModelDefinition} from 'typeorm-to-json/dist/types';
 import {generateBlankSpaces, postgresToPrismaTypeMapping} from './helpers';
 import * as crypto from 'crypto';
-import {v4 as uuidv4} from 'uuid';
-
 
 export const generatePrismaSchema = (models: ModelDefinition[], schemaPath?: string, makeCompanyIdOptional = false) => {
   const prismaSchema = [];
 
-  prismaSchema.push(`generator client {\n  provider = "prisma-client-js"\n  previewFeatures = ["interactiveTransactions"]\n}\n\ndatasource db {\n  provider = "postgresql"\n  url      = env("DATABASE_URL")\n}\n`);
-  for (const _model of models) {
+  prismaSchema.push(`generator client {\n  provider = "prisma-client-js"\n}\n\ndatasource db {\n  provider = "postgresql"\n  url      = env("DATABASE_URL")\n}\n`);
 
+  for (const _model of models) {
     const longestFieldNameLength = _model.fields.reduce((acc, field) => field.name.length > acc ? field.name.length : acc, 0);
     const longestRelationNameLength = _model.relations.reduce((acc, relation) => relation.name.length > acc ? relation.name.length : acc, 0);
     const longestRelationTypeLength = _model.relations.reduce((acc, relation) => relation.referencedModel.length > acc ? relation.referencedModel.length : acc, 0);
@@ -43,7 +41,12 @@ export const generatePrismaSchema = (models: ModelDefinition[], schemaPath?: str
       const prismaPrimary = `@id`;
       const prismaGenerated = `@default(dbgenerated())`;
       const isOptional = !_field.isPrimary && !mappedType.includes('[]') && (_field.isNullable || _model.type === 'view' || (_field.name === 'companyId' && makeCompanyIdOptional));
-      prismaFields.push(`  ${_field.name}${blankSpacesAfterProperty}${mappedType}${isOptional ? '?' : ''}${blankSpacesAfterType}${prismaMap}  ${_field.isPrimary ? prismaPrimary : _field.isUnique ? prismaUnique : ''} ${_field.isGenerated ? prismaGenerated : ''}`);
+
+      const fieldName = `${_field.name}${blankSpacesAfterProperty}`;
+      const fieldType = `${mappedType}${isOptional ? '?' : ''}${blankSpacesAfterType}`;
+      const fieldPrimaryOrUnique = _field.isPrimary ? prismaPrimary : _field.isUnique ? prismaUnique : '';
+      const fieldIsGenerated = _field.isGenerated ? prismaGenerated : '';
+      prismaFields.push(`  ${fieldName}${fieldType}${prismaMap}  ${fieldPrimaryOrUnique} ${fieldIsGenerated}`);
     }
 
     const prismaRelations: string[] = [];
@@ -62,7 +65,6 @@ export const generatePrismaSchema = (models: ModelDefinition[], schemaPath?: str
 
       const blankSpacesAfterProperty = generateBlankSpaces(longestPropertyLength, _relation.name.length);
       const showRelationName = referencedModelsWithMultipleRelations.includes(_relation.referencedModel);
-      const randomConstraintName = `, map: "${uuidv4()}_fk"`;
       const constraintHash = `, map: "${crypto.createHash('md5').update(`${_relation.type}_${_relation.referencedModel}_${_relation.fields}`).digest('hex')}_fk"`;
 
       if (['many-to-one'].includes(_relation.type)) {

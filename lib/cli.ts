@@ -1,6 +1,7 @@
 #! /usr/bin/env node
-const {program} = require('commander');
-const {generatePrismaSchemaFromEntities} = require('./index');
+import {program} from 'commander';
+import {generatePrismaSchemaFromEntities} from './index';
+
 require('dotenv').config({path: `.env`});
 
 program.requiredOption('-e, --entities <path>', 'Path to entities');

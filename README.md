@@ -1,29 +1,29 @@
-<p align='center'>
-    <img src="./logo.png">
+<p style="text-align: center">
+    <img src="./logo.png" alt="logo">
 </p>
 
 # Prisma Schema Generator
 
-CLI Tool to generate prisma.schema file from typeorm entities
+CLI Tool to generate a `schema.prisma` file from TypeORM entities.
 
-You can now combine the power of two orm's with their own strengths and weaknesses.
+You can now combine the power of two ORM's with their own strengths and weaknesses.
 
-While typeorm offers a beautiful way to define models/entities with their relations, the client lacks a bit of functionality and simplicity. That is where prisma comes into play. Its offers a super intuitive and easy way to query the data but its
-model definition is limited to their schema.prisma file.
+While TypeORM offers a beautiful way to define models/entities with their relations, the client lacks a bit of functionality and simplicity. That is where prisma comes into play. It offers a super intuitive and easy way to query the data but its
+model definition is limited to their `schema.prisma` file.
 
-The biggest issue with prisma, at least in my opinion, is that their migration interface is not supporting many things. The whole migration interface is not very intuitive and you cant e.g. roll back migrations.
+The biggest issue with Prisma is the lack of a robust migration interface lacking several key features, notably database migration rollbacks.
 
-So with this little package you are now able to use (or keep your existing) typeorm entities and migrations, while quering the data with the prisma client.
+With this package, you are now able to use (or keep your existing) TypeORM entities and migrations, and then query the data with the Prisma Client.
 
-It searches for all entities in your typeorm connection and converts them to the prisma.schema format which can then be used by the prisma client. It keeps all ManyToOne & OneToOne relations and automatically generates the inverted OneToMany
+This tool searches for all entities in your TypeORM connection and converts them to the Prisma schema format which can then be used by the Prisma client. It keeps all ManyToOne & OneToOne relations and automatically generates the inverted OneToMany
 relation(s).
 
 ### Known Limitations
 
-- Only tested/working with postgresql
+- Only tested/working with PostgreSQL
 - Not tested with ManyToMany relations
 - When an entity references the same model twice, the generator is not able to generate the inverted relations. You will have to add the ManyToOne and OneToMany relations with the inverseSide manually.
-- It's necessary to pass the postgres column type in the typeorm entity.
+- It's necessary to pass the Postgres column type in the TypeORM entity.
 
 ## Installation
 

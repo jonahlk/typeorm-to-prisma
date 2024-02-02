@@ -2,8 +2,15 @@ import {createConnection} from 'typeorm';
 import {generateObjectFromTypeormEntities} from 'typeorm-to-json';
 import {generatePrismaSchema} from './generate-schema';
 
-
-export const generatePrismaSchemaFromEntities = async (pathToEntities: string, pgHost: string, pgUsername: string, pgPassword: string, pgDb: string, schemaPath?: string, makeCompanyIdOptional?: boolean) => {
+export const generatePrismaSchemaFromEntities = async (
+  pathToEntities: string,
+  pgHost: string,
+  pgUsername: string,
+  pgPassword: string,
+  pgDb: string,
+  schemaPath?: string,
+  makeCompanyIdOptional?: boolean,
+) => {
   const typeorm = await createConnection({
     type: 'postgres',
     host: pgHost,
@@ -15,5 +22,5 @@ export const generatePrismaSchemaFromEntities = async (pathToEntities: string, p
 
   const models = await generateObjectFromTypeormEntities(typeorm);
   console.log(`Generating Prisma File for ${models.length} models...`);
-  await generatePrismaSchema(models, schemaPath, makeCompanyIdOptional);
+  generatePrismaSchema(models, schemaPath, makeCompanyIdOptional);
 };
